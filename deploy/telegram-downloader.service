@@ -1,0 +1,32 @@
+[Unit]
+Description=Telegram Media Downloader Bot (24/7 Hardened)
+After=network.target
+
+[Service]
+Type=simple
+User=tgbot
+Group=tgbot
+WorkingDirectory=/opt/telegram-downloader
+EnvironmentFile=/opt/telegram-downloader/.env
+ExecStart=/opt/telegram-downloader/venv/bin/python /opt/telegram-downloader/bot.py
+Restart=always
+RestartSec=5
+
+# Systemd sandboxing
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ReadWritePaths=/opt/telegram-downloader/downloads
+
+# Control de recursos contra ataques de denegacion de servicio (DoS)
+MemoryMax=350M
+CPUQuota=85%
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
